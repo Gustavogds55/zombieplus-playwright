@@ -12,29 +12,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout do código
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2️⃣ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
 
+      # 3️⃣ Instalar dependências
       - name: Install dependencies
         run: npm ci
 
+      # 4️⃣ Instalar navegadores do Playwright
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      # 🟢 Inicia o servidor da aplicação em background
+      # 5️⃣ Iniciar aplicação
       - name: Start application
         run: |
-          npm run dev &
-          npx wait-on http://localhost:3000
+          npm run dev &           # roda em background
+          npx wait-on http://localhost:3000 -t 60000  # aguarda até estar disponível
 
+      # 6️⃣ Rodar testes Playwright com relatório HTML
       - name: Run Playwright tests
-        run: npx playwright test
+        run: npx playwright test --reporter=html
 
+      # 7️⃣ Upload do relatório
       - name: Upload Playwright report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4

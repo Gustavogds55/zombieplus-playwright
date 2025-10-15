@@ -26,6 +26,12 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
+      # 🟢 Inicia o servidor da aplicação em background
+      - name: Start application
+        run: |
+          npm start &
+          npx wait-on http://localhost:3000
+
       - name: Run Playwright tests
         run: npx playwright test
 
@@ -36,4 +42,3 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-
